@@ -1,0 +1,178 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "name": "Lea Cohen",
+      "email": "lea@gmail.com",
+      "password": "l123"
+    },
+    {
+      "id": "2",
+      "name": "Chaim Levi",
+      "email": "chaim@gmail.com",
+      "password": "c123"
+    },
+    {
+      "id": "3",
+      "name": "Tamar Azulay",
+      "email": "tamar@gmail.com",
+      "password": "t123"
+    },
+    {
+      "id": "4",
+      "name": "David Mizrahi",
+      "email": "david@gmail.com",
+      "password": "d123"
+    },
+    {
+      "id": "5",
+      "name": "Noa Shalom",
+      "email": "noa@gmail.com",
+      "password": "n123"
+    },
+    {
+      "id": "68fd",
+      "name": "אילה לב",
+      "email": "a@g.com",
+      "password": "123456"
+    },
+    {
+      "id": "a00c",
+      "name": "לאה",
+      "email": "lea@gmail.com",
+      "password": "123456"
+    },
+    {
+      "id": "ad59",
+      "name": "לאה",
+      "email": "lea@gmail.com",
+      "password": "123456"
+    },
+    {
+      "id": "a696",
+      "name": "לאה אלקבץ",
+      "email": "leah23531@gmail.com",
+      "password": "12345"
+    },
+    {
+      "id": "5723",
+      "name": "ggg",
+      "email": "fg@g.c",
+      "password": "123456"
+    },
+    {
+      "id": "a29e",
+      "name": "בב",
+      "email": "0527662017s@gmail.com",
+      "password": "ktv"
+    }
+  ],
+  "courses": [
+    {
+      "id": "1",
+      "title": "Python Programming Basics",
+      "description": "An introductory course on Python programming.",
+      "price": 199,
+      "category": "Programming",
+      "creatorUserId": 1
+    },
+    {
+      "id": "2",
+      "title": "Introduction to Graphic Design",
+      "description": "Learn Photoshop, Illustrator, and design principles.",
+      "price": 250,
+      "category": "Design",
+      "creatorUserId": 2
+    },
+    {
+      "id": "3",
+      "title": "Web Development with React",
+      "description": "Build dynamic web applications using React.js.",
+      "price": 299,
+      "category": "Web Development",
+      "creatorUserId": 3
+    },
+    {
+      "id": "4",
+      "title": "Data Analysis with Excel",
+      "description": "Learn to analyze data using Excel tools and formulas.",
+      "price": 120,
+      "category": "Data",
+      "creatorUserId": 4
+    },
+    {
+      "id": "5",
+      "title": "Digital Marketing Fundamentals",
+      "description": "Master the basics of online marketing strategies.",
+      "price": 180,
+      "category": "Marketing",
+      "creatorUserId": 5
+    },
+    {
+      "id": "6",
+      "title": "Advanced JavaScript",
+      "description": "Deep dive into modern JavaScript features and concepts.",
+      "price": 220,
+      "category": "Programming",
+      "creatorUserId": 2
+    }
+  ],
+  "reviews": [
+    {
+      "id": "1",
+      "courseId": 1,
+      "userId": 2,
+      "rating": 5,
+      "comment": "Very clear and helpful for beginners."
+    },
+    {
+      "id": "2",
+      "courseId": 2,
+      "userId": 1,
+      "rating": 4,
+      "comment": "Good course but a bit too fast-paced."
+    },
+    {
+      "id": "3",
+      "courseId": 3,
+      "userId": 4,
+      "rating": 5,
+      "comment": "Excellent hands-on projects and explanations."
+    },
+    {
+      "id": "4",
+      "courseId": 4,
+      "userId": 5,
+      "rating": 3,
+      "comment": "Basic content, useful for beginners only."
+    },
+    {
+      "id": "5",
+      "courseId": 5,
+      "userId": 1,
+      "rating": 5,
+      "comment": "Well structured and easy to follow."
+    },
+    {
+      "id": "6",
+      "courseId": 6,
+      "userId": 3,
+      "rating": 4,
+      "comment": "Advanced and detailed, great for experienced devs."
+    },
+    {
+      "id": "7",
+      "courseId": 3,
+      "userId": 2,
+      "rating": 5,
+      "comment": "React was never so fun! Thanks!"
+    },
+    {
+      "id": "8",
+      "courseId": 6,
+      "userId": 5,
+      "rating": 4,
+      "comment": "Learned a lot, although some parts were tough."
+    }
+  ]
+}

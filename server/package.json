@@ -1,0 +1,20 @@
+{
+  "name": "jsonserver",
+  "version": "1.0.0",
+  "description": "Fake REST API",
+  "main": "index.js",
+  "scripts": {
+    "json-server": "json-server --watch db.json --port 3001",
+    "client": "react-scripts start",
+    "start": "concurrently \"npm run json-server\" \"npm run client\""
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "json-server": "^1.0.0-beta.3"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "proxy": "http://localhost:3001"
+}
