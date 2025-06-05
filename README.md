@@ -31,13 +31,8 @@ A complete fullstack-like React project simulating an online store for digital c
 ```bash
 git clone https://github.com/your-username/coursehub-react.git
 cd coursehub-react
-
-### ✅ 1. Clone the Repository
 npm install
-
-### ✅ 3. Run JSON Server (Local Backend)
 npx json-server --watch db.json --port 3001
-
-###✅ 4. Run the React App
 npm start
+
 
