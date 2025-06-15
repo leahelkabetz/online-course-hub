@@ -65,6 +65,14 @@
       "name": "בב",
       "email": "0527662017s@gmail.com",
       "password": "ktv"
+    },
+    {
+      "id": "e200",
+      "name": "לאה",
+      "email": "l@g.c",
+      "password": "Leah23531!",
+      "confirmPassword": "Leah23531!",
+      "isAdmin": true
     }
   ],
   "courses": [

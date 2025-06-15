@@ -1,643 +1,5 @@
 
-// // // // import React, { useEffect, useState } from 'react';
-// // // // import { Typography, Box } from '@mui/material';
-// // // // import InfiniteScroll from 'react-infinite-scroll-component';
-// // // // import CourseCard from '../Components/CourseCard';
 
-// // // // const allCourses = Array.from({ length: 100 }, (_, i) => ({
-// // // //   title: `קורס מספר ${i + 1}`,
-// // // //   category: 'פיתוח תוכנה',
-// // // //   description: 'תיאור של קורס מעולה עם המון ערך מקצועי',
-// // // //   price: 250 + (i % 5) * 10,
-// // // //   students: 30 + i,
-// // // //   rating: parseFloat((Math.random() * 2 + 3).toFixed(1)),
-// // // //   badge: i % 2 === 0 ? 'פופולרי' : undefined,
-// // // //   image: '',
-// // // // }));
-
-// // // // const CoursesPage: React.FC = () => {
-// // // //   const [courses, setCourses] = useState<any[]>([]);
-// // // //   const [hasMore, setHasMore] = useState(true);
-// // // //   const [currentIndex, setCurrentIndex] = useState(0);
-// // // //   const pageSize = 20;
-
-// // // //   const loadMore = () => {
-// // // //     const next = allCourses.slice(currentIndex, currentIndex + pageSize);
-// // // //     setCourses((prev) => [...prev, ...next]);
-// // // //     setCurrentIndex(currentIndex + pageSize);
-// // // //     if (currentIndex + pageSize >= allCourses.length) {
-// // // //       setHasMore(false);
-// // // //     }
-// // // //   };
-
-// // // //   useEffect(() => {
-// // // //     loadMore();
-// // // //   }, []);
-
-// // // //   return (
-// // // //     <Box sx={{ mt: 4, px: 2 }}>
-      
-
-// // // //       <InfiniteScroll
-// // // //         dataLength={courses.length}
-// // // //         next={loadMore}
-// // // //         hasMore={hasMore}
-// // // //         loader={<Typography align="center">טוען עוד קורסים...</Typography>}
-// // // //         endMessage={
-// // // //           <Typography align="center" sx={{ mt: 2 }}>
-// // // //             אין עוד קורסים להצגה 🎉
-// // // //           </Typography>
-// // // //         }
-// // // //       >
-// // // //         <Box
-// // // //           sx={{
-// // // //             display: 'flex',
-// // // //             flexWrap: 'wrap',
-// // // //             gap: 3,
-// // // //             justifyContent: 'center',
-// // // //           }}
-// // // //         >
-// // // //           {courses.map((course, i) => (
-// // // //             <Box
-// // // //               key={i}
-// // // //               sx={{
-// // // //                 width: {
-// // // //                   xs: '100%',       // מסך צר
-// // // //                   sm: '45%',        // טאבלט
-// // // //                   md: '30%',        // מחשב רגיל
-// // // //                   lg: '22%',        // מחשב רחב
-// // // //                 },
-// // // //                 minWidth: 260,
-// // // //               }}
-// // // //             >
-// // // //               <CourseCard {...course} />
-// // // //             </Box>
-// // // //           ))}
-// // // //         </Box>
-// // // //       </InfiniteScroll>
-// // // //     </Box>
-// // // //   );
-// // // // };
-
-// // // // export default CoursesPage;
-
-// // // import React, { useEffect, useState, useMemo } from 'react';
-// // // import {
-// // //   Typography,
-// // //   Box,
-// // //   TextField,
-// // //   Select,
-// // //   MenuItem,
-// // //   InputLabel,
-// // //   FormControl,
-// // //   Slider,
-// // // } from '@mui/material';
-// // // import InfiniteScroll from 'react-infinite-scroll-component';
-// // // import CourseCard from '../Components/CourseCard';
-
-// // // // מקור נתונים
-// // // const allCourses = Array.from({ length: 100 }, (_, i) => ({
-// // //   title: `קורס מספר ${i + 1}`,
-// // //   category: i % 3 === 0 ? 'פיתוח תוכנה' : i % 3 === 1 ? 'עיצוב' : 'שיווק',
-// // //   description: 'תיאור של קורס מעולה עם המון ערך מקצועי',
-// // //   price: 200 + (i % 5) * 50,
-// // //   students: 30 + i,
-// // //   rating: parseFloat((Math.random() * 2 + 3).toFixed(1)),
-// // //   badge: i % 2 === 0 ? 'פופולרי' : undefined,
-// // //   image: '',
-// // // }));
-
-// // // const CoursesPage: React.FC = () => {
-// // //   const [displayedCourses, setDisplayedCourses] = useState<any[]>([]);
-// // //   const [hasMore, setHasMore] = useState(true);
-// // //   const [currentIndex, setCurrentIndex] = useState(0);
-// // //   const [filters, setFilters] = useState({
-// // //     search: '',
-// // //     category: '',
-// // //     priceRange: [0, 500],
-// // //   });
-
-// // //   const pageSize = 20;
-
-// // //   const handleFilterChange = (field: string, value: any) => {
-// // //     setDisplayedCourses([]);
-// // //     setCurrentIndex(0);
-// // //     setHasMore(true);
-// // //     setFilters((prev) => ({ ...prev, [field]: value }));
-// // //   };
-
-// // //   const filteredCourses = useMemo(() => {
-// // //     return allCourses.filter((c) => {
-// // //       const matchesSearch =
-// // //         c.title.includes(filters.search) || c.description.includes(filters.search);
-// // //       const matchesCategory = !filters.category || c.category === filters.category;
-// // //       const matchesPrice = c.price >= filters.priceRange[0] && c.price <= filters.priceRange[1];
-// // //       return matchesSearch && matchesCategory && matchesPrice;
-// // //     });
-// // //   }, [filters]);
-
-// // //   const loadMore = () => {
-// // //     const next = filteredCourses.slice(currentIndex, currentIndex + pageSize);
-// // //     setDisplayedCourses((prev) => [...prev, ...next]);
-// // //     setCurrentIndex(currentIndex + pageSize);
-// // //     if (currentIndex + pageSize >= filteredCourses.length) {
-// // //       setHasMore(false);
-// // //     }
-// // //   };
-
-// // //   useEffect(() => {
-// // //     setDisplayedCourses([]);
-// // //     setCurrentIndex(0);
-// // //     setHasMore(true);
-// // //   }, [filters]);
-
-// // //   useEffect(() => {
-// // //     loadMore();
-// // //   }, [filters]);
-
-// // //   return (
-// // //     <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, px: 2, mt: 4 }}>
-// // //       {/* סינון צדדי */}
-// // //       <Box sx={{ width: { xs: '100%', md: '250px' }, mb: { xs: 4, md: 0 }, mr: { md: 4 } }}>
-// // //         <Typography variant="h6" gutterBottom>
-// // //           סינון קורסים
-// // //         </Typography>
-
-// // //         <TextField
-// // //           fullWidth
-// // //           label="חיפוש"
-// // //           variant="outlined"
-// // //           value={filters.search}
-// // //           onChange={(e) => handleFilterChange('search', e.target.value)}
-// // //           sx={{ mb: 2 }}
-// // //         />
-
-// // //         <FormControl fullWidth sx={{ mb: 2 }}>
-// // //           <InputLabel>קטגוריה</InputLabel>
-// // //           <Select
-// // //             value={filters.category}
-// // //             label="קטגוריה"
-// // //             onChange={(e) => handleFilterChange('category', e.target.value)}
-// // //           >
-// // //             <MenuItem value="">הכול</MenuItem>
-// // //             <MenuItem value="פיתוח תוכנה">פיתוח תוכנה</MenuItem>
-// // //             <MenuItem value="עיצוב">עיצוב</MenuItem>
-// // //             <MenuItem value="שיווק">שיווק</MenuItem>
-// // //           </Select>
-// // //         </FormControl>
-
-// // //         <Typography gutterBottom>טווח מחירים</Typography>
-// // //         <Slider
-// // //           value={filters.priceRange}
-// // //           onChange={(_, newValue) => handleFilterChange('priceRange', newValue)}
-// // //           valueLabelDisplay="auto"
-// // //           min={0}
-// // //           max={500}
-// // //         />
-// // //       </Box>
-
-// // //       {/* אזור תצוגת קורסים */}
-// // //       <Box sx={{ flexGrow: 1 }}>
-// // //         <InfiniteScroll
-// // //           dataLength={displayedCourses.length}
-// // //           next={loadMore}
-// // //           hasMore={hasMore}
-// // //           loader={<Typography align="center">טוען עוד קורסים...</Typography>}
-// // //           endMessage={
-// // //             <Typography align="center" sx={{ mt: 2 }}>
-// // //               אין עוד קורסים להצגה 🎉
-// // //             </Typography>
-// // //           }
-// // //         >
-// // //           <Box
-// // //             sx={{
-// // //               display: 'flex',
-// // //               flexWrap: 'wrap',
-// // //               gap: 3,
-// // //               justifyContent: 'center',
-// // //             }}
-// // //           >
-// // //             {displayedCourses.map((course, i) => (
-// // //               <Box
-// // //                 key={i}
-// // //                 sx={{
-// // //                   width: {
-// // //                     xs: '100%',
-// // //                     sm: '45%',
-// // //                     md: '30%',
-// // //                     lg: '22%',
-// // //                   },
-// // //                   minWidth: 260,
-// // //                 }}
-// // //               >
-// // //                 <CourseCard {...course} />
-// // //               </Box>
-// // //             ))}
-// // //           </Box>
-// // //         </InfiniteScroll>
-// // //       </Box>
-// // //     </Box>
-// // //   );
-// // // };
-
-// // // export default CoursesPage;
-// // import React, { useEffect, useState, useMemo } from 'react';
-// // import {
-// //   Typography,
-// //   Box,
-// //   TextField,
-// //   Select,
-// //   MenuItem,
-// //   InputLabel,
-// //   FormControl,
-// //   Slider,
-// //   Paper,
-// // } from '@mui/material';
-// // import InfiniteScroll from 'react-infinite-scroll-component';
-// // import CourseCard from '../Components/CourseCard';
-// // import { colors, fonts } from '../styles/theme'; // אם יש לך
-
-// // // נתונים לדוגמה
-// // const allCourses = Array.from({ length: 100 }, (_, i) => ({
-// //   title: `קורס מספר ${i + 1}`,
-// //   category: i % 3 === 0 ? 'פיתוח תוכנה' : i % 3 === 1 ? 'עיצוב' : 'שיווק',
-// //   description: 'תיאור של קורס מעולה עם המון ערך מקצועי',
-// //   price: 200 + (i % 5) * 50,
-// //   students: 30 + i,
-// //   rating: parseFloat((Math.random() * 2 + 3).toFixed(1)),
-// //   badge: i % 2 === 0 ? 'פופולרי' : undefined,
-// //   image: '',
-// // }));
-
-// // const CoursesPage: React.FC = () => {
-// //   const [displayedCourses, setDisplayedCourses] = useState<any[]>([]);
-// //   const [hasMore, setHasMore] = useState(true);
-// //   const [currentIndex, setCurrentIndex] = useState(0);
-// //   const [filters, setFilters] = useState({
-// //     search: '',
-// //     category: '',
-// //     priceRange: [0, 500],
-// //   });
-
-// //   const pageSize = 20;
-
-// //   const handleFilterChange = (field: string, value: any) => {
-// //     setDisplayedCourses([]);
-// //     setCurrentIndex(0);
-// //     setHasMore(true);
-// //     setFilters((prev) => ({ ...prev, [field]: value }));
-// //   };
-
-// //   const filteredCourses = useMemo(() => {
-// //     return allCourses.filter((c) => {
-// //       const matchesSearch =
-// //         c.title.includes(filters.search) || c.description.includes(filters.search);
-// //       const matchesCategory = !filters.category || c.category === filters.category;
-// //       const matchesPrice = c.price >= filters.priceRange[0] && c.price <= filters.priceRange[1];
-// //       return matchesSearch && matchesCategory && matchesPrice;
-// //     });
-// //   }, [filters]);
-
-// //   const loadMore = () => {
-// //     const next = filteredCourses.slice(currentIndex, currentIndex + pageSize);
-// //     setDisplayedCourses((prev) => [...prev, ...next]);
-// //     setCurrentIndex(currentIndex + pageSize);
-// //     if (currentIndex + pageSize >= filteredCourses.length) {
-// //       setHasMore(false);
-// //     }
-// //   };
-
-// //   useEffect(() => {
-// //     setDisplayedCourses([]);
-// //     setCurrentIndex(0);
-// //     setHasMore(true);
-// //   }, [filters]);
-
-// //   useEffect(() => {
-// //     loadMore();
-// //   }, [filters]);
-
-// //   return (
-// //     <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, px: 2, mt: 4 }}>
-// //       {/* צד סינון – בעיצוב נקי כמו בתמונה */}
-// //       <Paper
-// //         elevation={1}
-// //         sx={{
-// //           width: { xs: '100%', md: '260px' },
-// //           p: 3,
-// //           mb: { xs: 4, md: 0 },
-// //           mr: { md: 4 },
-// //           borderRadius: 3,
-// //         }}
-// //       >
-// //         <Typography
-// //           variant="h6"
-// //           fontWeight="bold"
-// //           sx={{ mb: 2, fontFamily: fonts?.heading || 'inherit' }}
-// //         >
-// //           סינון קורסים
-// //         </Typography>
-
-// //         <Box sx={{ display: 'flex', gap: 1, mb: 3 }}>
-// //           <TextField
-// //             placeholder="מ-"
-// //             size="small"
-// //             type="number"
-// //             value={filters.priceRange[0]}
-// //             onChange={(e) =>
-// //               handleFilterChange('priceRange', [
-// //                 +e.target.value || 0,
-// //                 filters.priceRange[1],
-// //               ])
-// //             }
-// //             sx={{
-// //               flex: 1,
-// //               borderRadius: 30,
-// //               backgroundColor: '#f5f5f5',
-// //               input: { textAlign: 'center' },
-// //             }}
-// //           />
-// //           <TextField
-// //             placeholder="עד"
-// //             size="small"
-// //             type="number"
-// //             value={filters.priceRange[1]}
-// //             onChange={(e) =>
-// //               handleFilterChange('priceRange', [
-// //                 filters.priceRange[0],
-// //                 +e.target.value || 0,
-// //               ])
-// //             }
-// //             sx={{
-// //               flex: 1,
-// //               borderRadius: 30,
-// //               backgroundColor: '#f5f5f5',
-// //               input: { textAlign: 'center' },
-// //             }}
-// //           />
-// //         </Box>
-
-// //         <FormControl fullWidth sx={{ mb: 3 }}>
-// //           <InputLabel>קטגוריה</InputLabel>
-// //           <Select
-// //             value={filters.category}
-// //             label="קטגוריה"
-// //             onChange={(e) => handleFilterChange('category', e.target.value)}
-// //           >
-// //             <MenuItem value="">הכול</MenuItem>
-// //             <MenuItem value="פיתוח תוכנה">פיתוח תוכנה</MenuItem>
-// //             <MenuItem value="עיצוב">עיצוב</MenuItem>
-// //             <MenuItem value="שיווק">שיווק</MenuItem>
-// //           </Select>
-// //         </FormControl>
-
-// //         <TextField
-// //           fullWidth
-// //           placeholder="חיפוש חופשי"
-// //           variant="outlined"
-// //           value={filters.search}
-// //           onChange={(e) => handleFilterChange('search', e.target.value)}
-// //           sx={{
-// //             borderRadius: 3,
-// //             backgroundColor: '#f5f5f5',
-// //             input: { fontFamily: fonts?.base || 'inherit' },
-// //           }}
-// //         />
-// //       </Paper>
-
-// //       {/* תצוגת קורסים */}
-// //       <Box sx={{ flexGrow: 1 }}>
-// //         <InfiniteScroll
-// //           dataLength={displayedCourses.length}
-// //           next={loadMore}
-// //           hasMore={hasMore}
-// //           loader={<Typography align="center">טוען עוד קורסים...</Typography>}
-// //           endMessage={
-// //             <Typography align="center" sx={{ mt: 2 }}>
-// //               אין עוד קורסים להצגה 🎉
-// //             </Typography>
-// //           }
-// //         >
-// //           <Box
-// //             sx={{
-// //               display: 'flex',
-// //               flexWrap: 'wrap',
-// //               gap: 3,
-// //               justifyContent: 'center',
-// //             }}
-// //           >
-// //             {displayedCourses.map((course, i) => (
-// //               <Box
-// //                 key={i}
-// //                 sx={{
-// //                   width: {
-// //                     xs: '100%',
-// //                     sm: '45%',
-// //                     md: '30%',
-// //                     lg: '22%',
-// //                   },
-// //                   minWidth: 260,
-// //                 }}
-// //               >
-// //                 <CourseCard {...course} />
-// //               </Box>
-// //             ))}
-// //           </Box>
-// //         </InfiniteScroll>
-// //       </Box>
-// //     </Box>
-// //   );
-// // };
-
-// // export default CoursesPage;
-// import React, { useEffect, useState, useMemo } from 'react';
-// import {
-//   Typography,
-//   Box,
-//   TextField,
-//   Select,
-//   MenuItem,
-//   InputLabel,
-//   FormControl,
-//   Slider,
-//   Paper,
-// } from '@mui/material';
-// import InfiniteScroll from 'react-infinite-scroll-component';
-// import CourseCard from '../Components/CourseCard';
-// import { colors, fonts } from '../styles/theme';
-
-// // מקור נתונים
-// const allCourses = Array.from({ length: 100 }, (_, i) => ({
-//   title: `קורס מספר ${i + 1}`,
-//   category: i % 3 === 0 ? 'פיתוח תוכנה' : i % 3 === 1 ? 'עיצוב' : 'שיווק',
-//   description: 'תיאור של קורס מעולה עם המון ערך מקצועי',
-//   price: 200 + (i % 5) * 50,
-//   students: 30 + i,
-//   rating: parseFloat((Math.random() * 2 + 3).toFixed(1)),
-//   badge: i % 2 === 0 ? 'פופולרי' : undefined,
-//   image: '',
-// }));
-
-// const CoursesPage: React.FC = () => {
-//   const [displayedCourses, setDisplayedCourses] = useState<any[]>([]);
-//   const [hasMore, setHasMore] = useState(true);
-//   const [currentIndex, setCurrentIndex] = useState(0);
-//   const [filters, setFilters] = useState({
-//     search: '',
-//     category: '',
-//     priceRange: [0, 500],
-//   });
-
-//   const pageSize = 20;
-
-//   const handleFilterChange = (field: string, value: any) => {
-//     setDisplayedCourses([]);
-//     setCurrentIndex(0);
-//     setHasMore(true);
-//     setFilters((prev) => ({ ...prev, [field]: value }));
-//   };
-
-//   const filteredCourses = useMemo(() => {
-//     return allCourses.filter((c) => {
-//       const matchesSearch =
-//         c.title.includes(filters.search) || c.description.includes(filters.search);
-//       const matchesCategory = !filters.category || c.category === filters.category;
-//       const matchesPrice = c.price >= filters.priceRange[0] && c.price <= filters.priceRange[1];
-//       return matchesSearch && matchesCategory && matchesPrice;
-//     });
-//   }, [filters]);
-
-//   const loadMore = () => {
-//     const next = filteredCourses.slice(currentIndex, currentIndex + pageSize);
-//     setDisplayedCourses((prev) => [...prev, ...next]);
-//     setCurrentIndex(currentIndex + pageSize);
-//     if (currentIndex + pageSize >= filteredCourses.length) {
-//       setHasMore(false);
-//     }
-//   };
-
-//   useEffect(() => {
-//     setDisplayedCourses([]);
-//     setCurrentIndex(0);
-//     setHasMore(true);
-//   }, [filters]);
-
-//   useEffect(() => {
-//     loadMore();
-//   }, [filters]);
-
-//   return (
-//     <Box sx={{ px: 2, mt: 4, direction: 'rtl' }}>
-//       {/* 🔹 סינון בראש הדף */}
-//       <Paper
-//         elevation={1}
-//         sx={{
-//           mb: 4,
-//           p: 3,
-//           borderRadius: 3,
-//           display: 'flex',
-//           flexWrap: 'wrap',
-//           gap: 2,
-//           justifyContent: 'space-between',
-//           alignItems: 'center',
-//         }}
-//       >
-//         <TextField
-//           label="חיפוש חופשי"
-//           variant="outlined"
-//           value={filters.search}
-//           onChange={(e) => handleFilterChange('search', e.target.value)}
-//           sx={{ minWidth: 200 }}
-//         />
-
-//         <FormControl sx={{ minWidth: 200 }}>
-//           <InputLabel>קטגוריה</InputLabel>
-//           <Select
-//             value={filters.category}
-//             label="קטגוריה"
-//             onChange={(e) => handleFilterChange('category', e.target.value)}
-//           >
-//             <MenuItem value="">הכל</MenuItem>
-//             <MenuItem value="פיתוח תוכנה">פיתוח תוכנה</MenuItem>
-//             <MenuItem value="עיצוב">עיצוב</MenuItem>
-//             <MenuItem value="שיווק">שיווק</MenuItem>
-//           </Select>
-//         </FormControl>
-
-//         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 200 }}>
-//           <Typography>מחיר:</Typography>
-//           <TextField
-//             placeholder="מ-"
-//             size="small"
-//             type="number"
-//             value={filters.priceRange[0]}
-//             onChange={(e) =>
-//               handleFilterChange('priceRange', [
-//                 +e.target.value || 0,
-//                 filters.priceRange[1],
-//               ])
-//             }
-//             sx={{ width: 80 }}
-//           />
-//           <TextField
-//             placeholder="עד"
-//             size="small"
-//             type="number"
-//             value={filters.priceRange[1]}
-//             onChange={(e) =>
-//               handleFilterChange('priceRange', [
-//                 filters.priceRange[0],
-//                 +e.target.value || 0,
-//               ])
-//             }
-//             sx={{ width: 80 }}
-//           />
-//         </Box>
-//       </Paper>
-
-//       {/* 🔹 תצוגת קורסים */}
-//       <InfiniteScroll
-//         dataLength={displayedCourses.length}
-//         next={loadMore}
-//         hasMore={hasMore}
-//         loader={<Typography align="center">טוען עוד קורסים...</Typography>}
-//         endMessage={
-//           <Typography align="center" sx={{ mt: 2 }}>
-//             אין עוד קורסים להצגה 🎉
-//           </Typography>
-//         }
-//       >
-//         <Box
-//           sx={{
-//             display: 'flex',
-//             flexWrap: 'wrap',
-//             gap: 3,
-//             justifyContent: 'center',
-//           }}
-//         >
-//           {displayedCourses.map((course, i) => (
-//             <Box
-//               key={i}
-//               sx={{
-//                 width: {
-//                   xs: '100%',
-//                   sm: '45%',
-//                   md: '30%',
-//                   lg: '22%',
-//                 },
-//                 minWidth: 260,
-//               }}
-//             >
-//               <CourseCard {...course} />
-//             </Box>
-//           ))}
-//         </Box>
-//       </InfiniteScroll>
-//     </Box>
-//   );
-// };
-
-// export default CoursesPage;
 import React, { useEffect, useState, useMemo } from 'react';
 import {
   Typography,
@@ -647,13 +9,23 @@ import {
   MenuItem,
   InputLabel,
   FormControl,
+  Chip,
   Slider,
   Paper,
-  Divider,
+  Button,
+  InputAdornment,
+  OutlinedInput,
+  Card
 } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
+import AddIcon from '@mui/icons-material/Add'; // בתחילת הקובץ
+
 import InfiniteScroll from 'react-infinite-scroll-component';
 import CourseCard from '../Components/CourseCard';
 import { colors, fonts } from '../styles/theme';
+import { string } from 'yup';
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux/store';
 
 const allCourses = Array.from({ length: 100 }, (_, i) => ({
   title: `קורס מספר ${i + 1}`,
@@ -670,11 +42,16 @@ const CoursesPage: React.FC = () => {
   const [displayedCourses, setDisplayedCourses] = useState<any[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<{
+    search: string;
+    categories: string[];
+    priceRange: [number, number];
+  }>({
     search: '',
-    category: '',
+    categories: [], // מערך ריק, מוגדר כ־string[]
     priceRange: [0, 500],
   });
+  const isAdmin = useSelector((state: RootState) => state.auth.isAdmin);
 
   const pageSize = 20;
 
@@ -685,15 +62,25 @@ const CoursesPage: React.FC = () => {
     setFilters((prev) => ({ ...prev, [field]: value }));
   };
 
+  const resetFilters = () => {
+    setFilters({ search: '', categories: [], priceRange: [0, 500] });
+  };
+
   const filteredCourses = useMemo(() => {
     return allCourses.filter((c) => {
       const matchesSearch =
         c.title.includes(filters.search) || c.description.includes(filters.search);
-      const matchesCategory = !filters.category || c.category === filters.category;
-      const matchesPrice = c.price >= filters.priceRange[0] && c.price <= filters.priceRange[1];
+
+      const matchesCategory =
+        filters.categories.length === 0 || filters.categories.includes(c.category);
+
+      const matchesPrice =
+        c.price >= filters.priceRange[0] && c.price <= filters.priceRange[1];
+
       return matchesSearch && matchesCategory && matchesPrice;
     });
   }, [filters]);
+
 
   const loadMore = () => {
     const next = filteredCourses.slice(currentIndex, currentIndex + pageSize);
@@ -704,137 +91,206 @@ const CoursesPage: React.FC = () => {
     }
   };
 
+  // useEffect(() => {
+  //   setDisplayedCourses([]);
+  //   setCurrentIndex(0);
+  //   setHasMore(true);
+  // }, [filters]);
+
+  // useEffect(() => {
+  //   loadMore();
+  // }, [filters]);
   useEffect(() => {
     setDisplayedCourses([]);
     setCurrentIndex(0);
     setHasMore(true);
-  }, [filters]);
 
-  useEffect(() => {
-    loadMore();
-  }, [filters]);
+    // קורא את הדף הראשון באופן מיידי
+    const next = filteredCourses.slice(0, pageSize);
+    setDisplayedCourses(next);
+    setCurrentIndex(pageSize);
+    if (pageSize >= filteredCourses.length) {
+      setHasMore(false);
+    }
+  }, [filters, filteredCourses]);
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'row-reverse', px: 2, mt: 4 }}>
-      {/* 🔹 סינון בצד ימין */}
-      <Paper
-        elevation={2}
-        sx={{
-          width: 260,
-          p: 3,
-          borderRadius: 4,
+      <div
+        // elevation={2}
+        style={{
+          minWidth: 320,
+          maxWidth: 380,
           fontFamily: fonts?.base || 'inherit',
-          color: colors?.Black || 'inherit',
-          flexShrink: 0,
+          // color: colors?.Black || 'inherit',
+          position: 'sticky',
+          top: 100,
+          alignSelf: 'flex-start',
+          height: 'fit-content',
+          marginTop: 12
         }}
       >
-        <Typography variant="h6" fontWeight="bold" sx={{ mb: 2 }}>
-          סינון קורסים
-        </Typography>
 
-        {/* חיפוש */}
         <TextField
           fullWidth
-          label="חיפוש חופשי"
+          placeholder="חיפוש חופשי"
           variant="outlined"
           value={filters.search}
           onChange={(e) => handleFilterChange('search', e.target.value)}
-          sx={{ mb: 3 }}
-          inputProps={{ dir: 'rtl' }}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon sx={{ color: 'gray' }} />
+              </InputAdornment>
+            ),
+            inputProps: {
+              dir: 'rtl',
+              style: { textAlign: 'right' },
+            },
+          }}
+          sx={{ mb: 3, mt: 6, direction: 'rtl' }}
         />
 
-        {/* קטגוריה */}
-        <FormControl fullWidth sx={{ mb: 3 }}>
-          <InputLabel>קטגוריה</InputLabel>
+        <FormControl fullWidth>
+
           <Select
-            value={filters.category}
-            label="קטגוריה"
-            onChange={(e) => handleFilterChange('category', e.target.value)}
+            labelId="categories-label"
+            multiple
+            displayEmpty
+            value={filters.categories}
+            onChange={(e) => handleFilterChange('categories', e.target.value)}
+            renderValue={(selected: any) => {
+              if (selected.length === 0) {
+                return <span
+                  style={{
+                    color: '#aaa',
+                    direction: 'rtl',
+                    textAlign: 'right',
+                    display: 'block', // חובה כדי ש-textAlign יעבוד
+                    width: '100%',    // כדי שהיישור יתפוס את כל השורה
+                  }}
+                >בחר קטגוריות</span>;
+              }
+              return (
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, direction: 'rtl' }}>
+                  {selected.map((value: string) => (
+                    <Chip key={value} label={value} />
+                  ))}
+                </Box>
+              );
+            }}
             inputProps={{ dir: 'rtl' }}
           >
-            <MenuItem value="">הכל</MenuItem>
-            <MenuItem value="פיתוח תוכנה">פיתוח תוכנה</MenuItem>
-            <MenuItem value="עיצוב">עיצוב</MenuItem>
-            <MenuItem value="שיווק">שיווק</MenuItem>
-          </Select>
-        </FormControl>
 
-        {/* טווח מחירים */}
-        <Typography gutterBottom>טווח מחירים</Typography>
+            <MenuItem dir='rtl' value="פיתוח תוכנה">פיתוח תוכנה</MenuItem>
+            <MenuItem dir='rtl' value="עיצוב">עיצוב</MenuItem>
+            <MenuItem dir='rtl' value="שיווק">שיווק</MenuItem>
+          </Select>
+
+        </FormControl>
         <Slider
           value={filters.priceRange}
           onChange={(_, val) => handleFilterChange('priceRange', val)}
-          valueLabelDisplay="auto"
+          valueLabelDisplay="on"
           min={0}
           max={500}
-          sx={{ mb: 1 }}
+          step={10}
+          sx={{
+            mb: 3,
+            mt: 5,
+            direction: 'ltr',
+            color: colors.Primary, // צבע הסליידר כולו (track + thumb)
+            '& .MuiSlider-thumb': {
+              backgroundColor: colors.AccentLight,
+            },
+            '& .MuiSlider-track': {
+              backgroundColor: colors.Primary,
+            },
+            '& .MuiSlider-rail': {
+              backgroundColor: '#e0e0e0',
+            },
+            '& .MuiSlider-valueLabel': {
+              backgroundColor: 'transparent',
+              color: colors.Primary,
+              fontWeight: 'bold',
+            },
+          }}
         />
-        <Box sx={{ display: 'flex', gap: 1 }}>
-          <TextField
-            placeholder="מ-"
-            size="small"
-            type="number"
-            value={filters.priceRange[0]}
-            onChange={(e) =>
-              handleFilterChange('priceRange', [+e.target.value || 0, filters.priceRange[1]])
-            }
-            fullWidth
-            inputProps={{ dir: 'rtl', min: 0 }}
-          />
-          <TextField
-            placeholder="עד"
-            size="small"
-            type="number"
-            value={filters.priceRange[1]}
-            onChange={(e) =>
-              handleFilterChange('priceRange', [filters.priceRange[0], +e.target.value || 0])
-            }
-            fullWidth
-            inputProps={{ dir: 'rtl', min: 0 }}
-          />
-        </Box>
-      </Paper>
+        <Button onClick={resetFilters} fullWidth sx={{ color: colors.Primary, textAlign: 'right' }}>
+          איפוס מסננים
+        </Button>
+      </div>
 
-      {/* 🔹 קורסים */}
-      <Box sx={{ flexGrow: 1, pr: { md: 4 } }}>
-        <InfiniteScroll
-          dataLength={displayedCourses.length}
-          next={loadMore}
-          hasMore={hasMore}
-          loader={<Typography align="center">טוען עוד קורסים...</Typography>}
-          endMessage={
-            <Typography align="center" sx={{ mt: 2 }}>
-              אין עוד קורסים להצגה 🎉
-            </Typography>
-          }
+      <Box
+        sx={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: 3,
+          justifyContent: 'center',
+        }}
+      >
+        {/* {isAdmin && ( */}
+        <Box
+          sx={{
+            width: {
+              xs: '90%',
+              sm: '45%',
+              md: '30%',
+              lg: '22%',
+            },
+            minWidth: 250,
+          }}
         >
-          <Box
+
+          <Card
             sx={{
+              height: 250,
+              border: `2px dashed ${colors.Primary}`,
+              borderRadius: 3,
               display: 'flex',
-              flexWrap: 'wrap',
-              gap: 3,
+              flexDirection: 'column',
               justifyContent: 'center',
+              alignItems: 'center',
+              cursor: 'pointer',
+              p: 2,
+              mt: 6,
+              mr: 10,
+              textAlign: 'center',
+              fontFamily: fonts.base,
+              transition: 'all 0.3s',
+              '&:hover': {
+                backgroundColor: '#f9f9f9',
+                boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+              },
+            }}
+            onClick={() => console.log('מעבר לטופס הוספת קורס')}
+          >
+            <AddIcon sx={{ fontSize: 40, color: colors.Primary, mb: 1 }} />
+            <Typography variant="subtitle1" color={colors.Primary} fontWeight="bold">
+              הוספת קורס חדש
+            </Typography>
+          </Card>
+        </Box>
+        {/* )} */}
+
+        {displayedCourses.map((course, i) => (
+          <Box
+            key={i}
+            sx={{
+              width: {
+                xs: '100%',
+                sm: '45%',
+                md: '30%',
+                lg: '22%',
+              },
+              minWidth: 250,
             }}
           >
-            {displayedCourses.map((course, i) => (
-              <Box
-                key={i}
-                sx={{
-                  width: {
-                    xs: '100%',
-                    sm: '45%',
-                    md: '30%',
-                    lg: '22%',
-                  },
-                  minWidth: 260,
-                }}
-              >
-                <CourseCard {...course} />
-              </Box>
-            ))}
+            <CourseCard {...course} isAdmin={isAdmin} />
           </Box>
-        </InfiniteScroll>
+        ))}
       </Box>
+
     </Box>
   );
 };

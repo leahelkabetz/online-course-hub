@@ -119,7 +119,7 @@ const Login = ({ openRegister }: LoginProps) => {
             </div>
 
             {error && (
-              <div className="alert text-center" style={{ backgroundColor: colors.White, color: "#fff" }}>
+              <div className="alert text-center" style={{  color: colors.Error }}>
                 {error}
               </div>
             )}

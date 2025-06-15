@@ -79,6 +79,8 @@ import MainRoutes from './MainRoutes';
 import { useSelector } from 'react-redux';
 import { RootState } from './redux/store';
 import LoginPage from "./pages/LoginPage";
+import { Box } from '@mui/material';
+import RegisterModal from "./Components/Register";
 
 function App() {
     const [showRegister, setShowRegister] = useState(false);
@@ -87,7 +89,13 @@ function App() {
   const openRegister = () => setShowRegister(true);
 
   
-  return isLoggedIn ? <MainRoutes /> : <LoginPage openRegister={openRegister} />;
+  return (
+    <Box>
+  {isLoggedIn ? <MainRoutes /> : <LoginPage openRegister={openRegister} />}
+      <RegisterModal show={showRegister} onClose={() => setShowRegister(false)} />
+
+    </Box>
+  )
   
 }
 

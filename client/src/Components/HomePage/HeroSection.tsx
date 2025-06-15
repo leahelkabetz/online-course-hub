@@ -29,7 +29,7 @@ export default function HeroSection() {
     alignItems: 'center',
     direction: 'rtl',
      textAlign: 'center',
-     mb:2
+     
   }}
 >
 
