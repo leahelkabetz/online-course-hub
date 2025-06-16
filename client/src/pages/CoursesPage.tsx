@@ -1,5 +1,3 @@
-
-
 import React, { useEffect, useState, useMemo } from 'react';
 import {
   Typography,
@@ -7,53 +5,56 @@ import {
   TextField,
   Select,
   MenuItem,
-  InputLabel,
   FormControl,
   Chip,
   Slider,
-  Paper,
   Button,
   InputAdornment,
-  OutlinedInput,
   Card
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import AddIcon from '@mui/icons-material/Add'; // בתחילת הקובץ
+import AddIcon from '@mui/icons-material/Add';
 
-import InfiniteScroll from 'react-infinite-scroll-component';
 import CourseCard from '../Components/CourseCard';
 import { colors, fonts } from '../styles/theme';
-import { string } from 'yup';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
-
-const allCourses = Array.from({ length: 100 }, (_, i) => ({
-  title: `קורס מספר ${i + 1}`,
-  category: i % 3 === 0 ? 'פיתוח תוכנה' : i % 3 === 1 ? 'עיצוב' : 'שיווק',
-  description: 'תיאור של קורס מעולה עם המון ערך מקצועי',
-  price: 200 + (i % 5) * 50,
-  students: 30 + i,
-  rating: parseFloat((Math.random() * 2 + 3).toFixed(1)),
-  badge: i % 2 === 0 ? 'פופולרי' : undefined,
-  image: '',
-}));
+import { getAllProducts } from '../api/coursesApi';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 const CoursesPage: React.FC = () => {
+  const [courses, setCourses] = useState<any[]>([]);
   const [displayedCourses, setDisplayedCourses] = useState<any[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const pageSize = 20;
+
   const [filters, setFilters] = useState<{
     search: string;
     categories: string[];
     priceRange: [number, number];
   }>({
     search: '',
-    categories: [], // מערך ריק, מוגדר כ־string[]
+    categories: [],
     priceRange: [0, 500],
   });
-  const isAdmin = useSelector((state: RootState) => state.auth.isAdmin);
 
-  const pageSize = 20;
+  const dispatch = useDispatch();
+  const isAdmin = useSelector((state: RootState) => state.auth.isAdmin);
+  const cart = useSelector((state: RootState) => state.cart.items || []);
+
+  const fetchCourses = async () => {
+    try {
+      const res = await getAllProducts();
+      setCourses(res.data);
+    } catch (error) {
+      console.error("Failed to fetch courses:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCourses();
+  }, []);
 
   const handleFilterChange = (field: string, value: any) => {
     setDisplayedCourses([]);
@@ -67,7 +68,7 @@ const CoursesPage: React.FC = () => {
   };
 
   const filteredCourses = useMemo(() => {
-    return allCourses.filter((c) => {
+    return courses.filter((c) => {
       const matchesSearch =
         c.title.includes(filters.search) || c.description.includes(filters.search);
 
@@ -79,8 +80,7 @@ const CoursesPage: React.FC = () => {
 
       return matchesSearch && matchesCategory && matchesPrice;
     });
-  }, [filters]);
-
+  }, [filters, courses]);
 
   const loadMore = () => {
     const next = filteredCourses.slice(currentIndex, currentIndex + pageSize);
@@ -91,21 +91,11 @@ const CoursesPage: React.FC = () => {
     }
   };
 
-  // useEffect(() => {
-  //   setDisplayedCourses([]);
-  //   setCurrentIndex(0);
-  //   setHasMore(true);
-  // }, [filters]);
-
-  // useEffect(() => {
-  //   loadMore();
-  // }, [filters]);
   useEffect(() => {
     setDisplayedCourses([]);
     setCurrentIndex(0);
     setHasMore(true);
 
-    // קורא את הדף הראשון באופן מיידי
     const next = filteredCourses.slice(0, pageSize);
     setDisplayedCourses(next);
     setCurrentIndex(pageSize);
@@ -114,15 +104,17 @@ const CoursesPage: React.FC = () => {
     }
   }, [filters, filteredCourses]);
 
+  const deleteFunc = async () => {
+    await fetchCourses(); // ריענון אחרי מחיקה
+  };
+
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'row-reverse', px: 2, mt: 4 }}>
+    <Box sx={{ display: 'flex', flexDirection: 'row-reverse', px: 2, mt: 10, mb: 5 }}>
       <div
-        // elevation={2}
         style={{
           minWidth: 320,
           maxWidth: 380,
           fontFamily: fonts?.base || 'inherit',
-          // color: colors?.Black || 'inherit',
           position: 'sticky',
           top: 100,
           alignSelf: 'flex-start',
@@ -152,24 +144,14 @@ const CoursesPage: React.FC = () => {
         />
 
         <FormControl fullWidth>
-
           <Select
-            labelId="categories-label"
             multiple
             displayEmpty
             value={filters.categories}
             onChange={(e) => handleFilterChange('categories', e.target.value)}
             renderValue={(selected: any) => {
               if (selected.length === 0) {
-                return <span
-                  style={{
-                    color: '#aaa',
-                    direction: 'rtl',
-                    textAlign: 'right',
-                    display: 'block', // חובה כדי ש-textAlign יעבוד
-                    width: '100%',    // כדי שהיישור יתפוס את כל השורה
-                  }}
-                >בחר קטגוריות</span>;
+                return <span style={{ color: '#aaa', direction: 'rtl', textAlign: 'right', display: 'block', width: '100%' }}>בחר קטגוריות</span>;
               }
               return (
                 <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, direction: 'rtl' }}>
@@ -181,13 +163,12 @@ const CoursesPage: React.FC = () => {
             }}
             inputProps={{ dir: 'rtl' }}
           >
-
             <MenuItem dir='rtl' value="פיתוח תוכנה">פיתוח תוכנה</MenuItem>
             <MenuItem dir='rtl' value="עיצוב">עיצוב</MenuItem>
             <MenuItem dir='rtl' value="שיווק">שיווק</MenuItem>
           </Select>
-
         </FormControl>
+
         <Slider
           value={filters.priceRange}
           onChange={(_, val) => handleFilterChange('priceRange', val)}
@@ -199,16 +180,10 @@ const CoursesPage: React.FC = () => {
             mb: 3,
             mt: 5,
             direction: 'ltr',
-            color: colors.Primary, // צבע הסליידר כולו (track + thumb)
-            '& .MuiSlider-thumb': {
-              backgroundColor: colors.AccentLight,
-            },
-            '& .MuiSlider-track': {
-              backgroundColor: colors.Primary,
-            },
-            '& .MuiSlider-rail': {
-              backgroundColor: '#e0e0e0',
-            },
+            color: colors.Primary,
+            '& .MuiSlider-thumb': { backgroundColor: colors.AccentLight },
+            '& .MuiSlider-track': { backgroundColor: colors.Primary },
+            '& .MuiSlider-rail': { backgroundColor: '#e0e0e0' },
             '& .MuiSlider-valueLabel': {
               backgroundColor: 'transparent',
               color: colors.Primary,
@@ -216,80 +191,69 @@ const CoursesPage: React.FC = () => {
             },
           }}
         />
+
         <Button onClick={resetFilters} fullWidth sx={{ color: colors.Primary, textAlign: 'right' }}>
           איפוס מסננים
         </Button>
       </div>
-
-      <Box
-        sx={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: 3,
-          justifyContent: 'center',
-        }}
+      <InfiniteScroll
+        dataLength={displayedCourses.length}
+        next={loadMore}
+        hasMore={hasMore}
+        loader={<Typography textAlign="center" mt={2}>טוען עוד קורסים...</Typography>}
+        style={{ overflow: 'visible', width: '100%' }}
       >
-        {/* {isAdmin && ( */}
-        <Box
-          sx={{
-            width: {
-              xs: '90%',
-              sm: '45%',
-              md: '30%',
-              lg: '22%',
-            },
-            minWidth: 250,
-          }}
-        >
-
-          <Card
-            sx={{
-              height: 250,
-              border: `2px dashed ${colors.Primary}`,
-              borderRadius: 3,
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-              cursor: 'pointer',
-              p: 2,
-              mt: 6,
-              mr: 10,
-              textAlign: 'center',
-              fontFamily: fonts.base,
-              transition: 'all 0.3s',
-              '&:hover': {
-                backgroundColor: '#f9f9f9',
-                boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-              },
-            }}
-            onClick={() => console.log('מעבר לטופס הוספת קורס')}
-          >
-            <AddIcon sx={{ fontSize: 40, color: colors.Primary, mb: 1 }} />
-            <Typography variant="subtitle1" color={colors.Primary} fontWeight="bold">
-              הוספת קורס חדש
-            </Typography>
-          </Card>
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3, justifyContent: 'center' }}>
+          {isAdmin && (
+            <Box sx={{ width: { xs: '90%', sm: '45%', md: '30%', lg: '22%' }, minWidth: 250 }}>
+              <Card
+                sx={{
+                  height: 250,
+                  border: `2px dashed ${colors.Primary}`,
+                  borderRadius: 3,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  cursor: 'pointer',
+                  p: 2,
+                  mt: 6,
+                  mr: 10,
+                  textAlign: 'center',
+                  fontFamily: fonts.base,
+                  transition: 'all 0.3s',
+                  '&:hover': {
+                    backgroundColor: '#f9f9f9',
+                    boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                  },
+                }}
+                onClick={() => console.log('מעבר לטופס הוספת קורס')}
+              >
+                <AddIcon sx={{ fontSize: 40, color: colors.Primary, mb: 1 }} />
+                <Typography variant="subtitle1" color={colors.Primary} fontWeight="bold">
+                  הוספת קורס חדש
+                </Typography>
+              </Card>
+            </Box>
+          )}
+          {displayedCourses.map((course, i) => (
+            <Box
+              key={i}
+              sx={{
+                width: {
+                  xs: '100%',
+                  sm: '45%',
+                  md: '30%',
+                  lg: '22%',
+                },
+                minWidth: 250,
+              }}
+            >
+              <CourseCard course={course} onDeleted={deleteFunc} />
+            </Box>
+          ))}
         </Box>
-        {/* )} */}
-
-        {displayedCourses.map((course, i) => (
-          <Box
-            key={i}
-            sx={{
-              width: {
-                xs: '100%',
-                sm: '45%',
-                md: '30%',
-                lg: '22%',
-              },
-              minWidth: 250,
-            }}
-          >
-            <CourseCard {...course} isAdmin={isAdmin} />
-          </Box>
-        ))}
-      </Box>
+      </InfiniteScroll>
 
     </Box>
   );

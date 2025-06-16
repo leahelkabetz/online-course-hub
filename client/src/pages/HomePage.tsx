@@ -38,8 +38,14 @@ import Why from '../Components/HomePage/Why';
 import PopularCoursesCarousel from '../Components/HomePage/PopularCourses';
 import HowItWorks from '../Components/HomePage/HowItWorks';
 import Navbar from '../Components/Navbar';
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux/store';
 
 export default function HomePage() {
+    const username = useSelector((state: RootState) => state.auth.username);
+    const password = useSelector((state: RootState) => state.auth.password);
+
+  console.log("Hello",username,"-" ,password)
   return (
     <>
     <Box sx={{ backgroundColor: colors.White, minHeight: '100vh', fontFamily: fonts.base }}>

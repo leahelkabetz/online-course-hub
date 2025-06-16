@@ -8,30 +8,37 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { colors } from "../styles/theme";
 import { useNavigate } from "react-router-dom";
-import ProductsPage from "../pages/HomePage"; // Assuming ProductsPage is exported from this path
-import About from "../Components/About"; // Assuming About is exported from this path
-import { useEffect } from "react";
+import { use, useEffect } from "react";
 import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../redux/store";
+import { logout } from "../redux/slices/authSlice";
 
 const Navbar = () => {
 
   const navigate = useNavigate();
+  const username = useSelector((state: RootState) => state.auth.username); // או כל מפתח אחר שיש לך
+  const isAdmin = useSelector((state: RootState) => state.auth.isAdmin); // או כל מפתח אחר שיש לך
+  // const isLoggedOut=useSelector((state: RootState) => state.auth.); // או כל מפתח אחר שיש לך
+  const dispatch = useDispatch();
+  console.log("isAdmin", isAdmin);
+  console.log("username", username);
   return (
     <AppBar position="static"
       sx={{
         position: 'fixed',
-        top:0,
-  lef:0,
-  right:0,
+        top: 0,
+        lef: 0,
+        right: 0,
         width: '100%',
         zIndex: 1000,
         boxShadow: 1,
         backgroundColor: colors.Primary, direction: "rtl", px: 3,
         mb: 20
       }}>
-      <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+      <Toolbar sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        {/* צד ימין (לוגו וכו') */}
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1, minWidth: 200 }}>
           <Link to="/" style={{ textDecoration: 'none' }}>
             <Typography variant="h5" sx={{ fontWeight: "bold", color: "white", cursor: 'pointer' }}>
               Upkurs
@@ -39,42 +46,71 @@ const Navbar = () => {
           </Link>
         </Box>
 
-        <Box sx={{ display: "flex", alignItems: "center", gap: 4 }}>
-          <Button color="inherit"
-            startIcon={<SchoolIcon sx={{ ml: 1 }} />}
-            sx={{ color: "white", fontSize: 16, py: 1 }}
-            onClick={() => navigate("/courses")} >
-            הקורסים שלנו
-          </Button>
-          <Button color="inherit"
-            startIcon={<ThumbUpIcon sx={{ ml: 1 }} />}
-            sx={{ color: "white", fontSize: 16, py: 1 }}
-            onClick={() => navigate("/about")} >
-            המלצות סטודנטים
-          </Button>
-          <Button color="inherit"
-            startIcon={<InfoOutlinedIcon sx={{ ml: 1 }} />}
-            sx={{ color: "white", fontSize: 16, py: 1 }}
-            onClick={() => navigate("/about")} >
-            מי אנחנו
-          </Button>
+        {/* אמצע – תפריט ניווט */}
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 4,
+            position: "absolute",
+            right: 0,
+            left: 0,
+            justifyContent: "center",
+            pointerEvents: "none", // למנוע לחיצה על כל הקופסה
+          }}
+        >
+          <Box sx={{ pointerEvents: "auto", display: "flex", gap: 4 }}>
+            <Button
+              color="inherit"
+              startIcon={<SchoolIcon sx={{ ml: 1 }} />}
+              sx={{ color: "white", fontSize: 16, py: 1 }}
+              onClick={() => navigate("/courses")}
+            >
+              הקורסים שלנו
+            </Button>
+            <Button
+              color="inherit"
+              startIcon={<ThumbUpIcon sx={{ ml: 1 }} />}
+              sx={{ color: "white", fontSize: 16, py: 1 }}
+              onClick={() => navigate("/feedback")}
+            >
+              המלצות סטודנטים
+            </Button>
+            <Button
+              color="inherit"
+              startIcon={<InfoOutlinedIcon sx={{ ml: 1 }} />}
+              sx={{ color: "white", fontSize: 16, py: 1 }}
+              onClick={() => navigate("/about")}
+            >
+              מי אנחנו
+            </Button>
+          </Box>
         </Box>
 
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        {/* צד שמאל – שם משתמש, עגלה וכו' */}
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1, minWidth: 200, justifyContent: "flex-end" }}>
           <IconButton sx={{ color: "white" }}>
             <PersonIcon />
           </IconButton>
-          <IconButton sx={{ color: "white" }}>
-            <ShoppingCartIcon />
-          </IconButton>
+          <Typography sx={{ color: "white", fontWeight: "bold", maxWidth: 100, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            שלום, {isAdmin ? "מנהל" : username}
+          </Typography>
+          {!isAdmin && (
+            <IconButton sx={{ color: "white" }}
+              onClick={() => navigate("/cart")}>
+              <ShoppingCartIcon />
+            </IconButton>
+          )}
           <IconButton sx={{ color: "white" }}>
             <ChatIcon />
           </IconButton>
-          <IconButton sx={{ color: "white" }}>
+          <IconButton sx={{ color: "white" }}
+            onClick={() => navigate("/login")}>
             <LogoutIcon />
           </IconButton>
         </Box>
       </Toolbar>
+
     </AppBar>
   );
 };

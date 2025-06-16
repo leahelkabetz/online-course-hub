@@ -4,19 +4,22 @@ import * as Yup from "yup";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { startLoading, stopLoading } from "../redux/slices/loadingSlice";
-import { colors } from "../styles/theme"; // ✅ שימוש בצבעים
+import { colors } from "../styles/theme";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import { loginUser } from "../redux/slices/authSlice";
-type LoginProps = {
+import { getUserByEmail } from "../api/usersApi";
+
+type LogInFormProps = {
   openRegister: () => void;
 };
 
-const Login = ({ openRegister }: LoginProps) => {
+const LogInForm = ({ openRegister }: LogInFormProps) => {
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -31,7 +34,7 @@ const Login = ({ openRegister }: LoginProps) => {
         setError("");
         dispatch(startLoading());
 
-        const res = await axios.get(`http://localhost:4000/users?email=${values.email}`);
+        const res = await getUserByEmail(values.email);
         const user = res.data[0];
 
         if (!user) {
@@ -39,9 +42,13 @@ const Login = ({ openRegister }: LoginProps) => {
         } else if (user.password !== values.password) {
           setError("סיסמה שגויה");
         } else {
-                    dispatch(loginUser({ username: user.username })); // <<< הוספה כאן
-
-          navigate("/")
+          dispatch(loginUser({
+            username: user.username,
+            password: user.password,
+            email: user.email,
+            isAdmin: user.isAdmin,
+          }));
+          navigate("/");
         }
       } catch (err) {
         setError("שגיאת שרת. יש לנסות במועד מאוחר יותר");
@@ -49,7 +56,7 @@ const Login = ({ openRegister }: LoginProps) => {
       } finally {
         dispatch(stopLoading());
       }
-    },
+    }
   });
 
   return (
@@ -61,7 +68,6 @@ const Login = ({ openRegister }: LoginProps) => {
             minWidth: "500px",
           }}
         >
-
           <form onSubmit={formik.handleSubmit}>
             <div className="row">
               <div className="col-12 mb-3">
@@ -119,7 +125,7 @@ const Login = ({ openRegister }: LoginProps) => {
             </div>
 
             {error && (
-              <div className="alert text-center" style={{  color: colors.Error }}>
+              <div className="alert text-center" style={{ color: colors.Error }}>
                 {error}
               </div>
             )}
@@ -139,7 +145,7 @@ const Login = ({ openRegister }: LoginProps) => {
                 borderRadius: "6px",
               }}
             >
-              התחברי
+              התחבר
             </button>
           </form>
 
@@ -150,7 +156,7 @@ const Login = ({ openRegister }: LoginProps) => {
               style={{ color: colors.Primary, textDecoration: "underline", fontWeight: "bold" }}
               onClick={openRegister}
             >
-              צרי אחד כאן
+              לחץ כאן
             </button>
           </div>
         </div>
@@ -159,4 +165,4 @@ const Login = ({ openRegister }: LoginProps) => {
   );
 };
 
-export default Login;
+export default LogInForm;

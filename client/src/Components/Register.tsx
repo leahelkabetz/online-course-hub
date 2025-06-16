@@ -4,10 +4,10 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Eye, EyeOff } from 'lucide-react';
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { setMessage } from "../redux/slices/messageSlice";
-import { colors } from "../styles/theme"; // ✅ שימוש בצבעים
-
+import { colors } from "../styles/theme";
+import { addUsers, getUserByEmail } from "../api/usersApi";
+import { useDispatch } from 'react-redux';
+import { showMessage } from '../redux/slices/messageSlice';
 type RegisterProps = {
   show: boolean;
   onClose: () => void;
@@ -25,13 +25,13 @@ const Register = ({ show, onClose }: RegisterProps) => {
 
   const formik = useFormik({
     initialValues: {
-      name: "",
+      username: "",
       email: "",
       password: "",
       confirmPassword: "",
     },
     validationSchema: Yup.object({
-      name: Yup.string().required("שדה חובה"),
+      username: Yup.string().required("שדה חובה"),
       email: Yup.string().email("כתובת אימייל לא תקינה").required("שדה חובה"),
       password: Yup.string()
         .required("שדה חובה")
@@ -43,13 +43,14 @@ const Register = ({ show, onClose }: RegisterProps) => {
         .required("יש לאשר סיסמה")
         .oneOf([Yup.ref("password")], "הסיסמאות אינן תואמות"),
     }),
+
+
     onSubmit: async (values, { resetForm }) => {
       try {
-        // בדוק אם המייל כבר קיים
-        const checkRes = await fetch(`http://localhost:4000/users?email=${values.email}`);
-        const users = await checkRes.json();
+        // בדיקת מייל קיים
+        const { data: users } = await getUserByEmail(values.email);
         if (users.length > 0) {
-          setToastMsg("המייל כבר קיים במערכת");
+          dispatch(showMessage({ type: 'error', text: 'המייל כבר קיים במערכת' }));
           setSuccess(true);
           resetForm();
           setShowConfirm(false);
@@ -61,35 +62,28 @@ const Register = ({ show, onClose }: RegisterProps) => {
           }, 3500);
           return;
         }
+        // רישום משתמש חדש
+        await addUsers({ ...values, isAdmin: false });
 
-        // אם לא קיים, בצע רישום
-        const res = await fetch('http://localhost:4000/users', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ...values, role: 'user' }),
-        });
-        if (res.ok) {
-          setToastMsg("נרשמת בהצלחה! שמחים שהצטרפת אלינו :)");
-          setSuccess(true);
-          resetForm();
-          setShowConfirm(false);
-          setShowPassword(false);
-          setTimeout(() => {
-            setSuccess(false);
-            onClose();
-            navigate('/login');
-          }, 3500);
-        } else {
-          throw new Error('הרישום נכשל');
-        }
+        dispatch(showMessage({ type: 'success', text:'נרשמת בהצלחה, שמחים שהצטרפת אלינו :)' }));
+        setSuccess(true);
+        resetForm();
+        setShowConfirm(false);
+        setShowPassword(false);
+        setTimeout(() => {
+          setSuccess(false);
+          onClose();
+          navigate('/login');
+        }, 3500);
       } catch (error) {
-        setToastMsg("שגיאה ברישום");
+        console.error("שגיאה ברישום:", error);
+        dispatch(showMessage({ type: 'error', text: 'שגיאה ברישום' }));
         setSuccess(true);
         setTimeout(() => {
           setSuccess(false);
         }, 3500);
       }
-    },
+    }
   });
 
   // איפוס כל השדות בלחיצה על ביטול
@@ -127,11 +121,11 @@ const Register = ({ show, onClose }: RegisterProps) => {
           bottom: 0,
           zIndex: 1050,
           display: "flex",
-          justifyContent: "center", // מרכז אופקית
+          justifyContent: "center",
           direction: "rtl",
           minHeight: "100vh",
           alignItems: "flex-start",
-          marginTop: "80px",// מבטיח גובה מלא
+          marginTop: "80px",
         }}
       >
         <div className="modal-dialog" style={{ minWidth: 350, direction: "rtl" }}>
@@ -146,14 +140,14 @@ const Register = ({ show, onClose }: RegisterProps) => {
                   <label className="form-label">שם מלא</label>
                   <input
                     type="text"
-                    name="name"
-                    className={`form-control ${formik.touched.name && formik.errors.name ? "is-invalid" : ""}`}
+                    name="username"
+                    className={`form-control ${formik.touched.username && formik.errors.username ? "is-invalid" : ""}`}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    value={formik.values.name}
+                    value={formik.values.username}
                   />
-                  {formik.touched.name && formik.errors.name && (
-                    <div className="invalid-feedback d-block">{formik.errors.name}</div>
+                  {formik.touched.username && formik.errors.username && (
+                    <div className="invalid-feedback d-block">{formik.errors.username}</div>
                   )}
                 </div>
                 <div className="mb-3 text-end">
@@ -245,28 +239,12 @@ const Register = ({ show, onClose }: RegisterProps) => {
           </div>
         </div>
       </div>
-
-      {/* טוסט הצלחה/שגיאה */}
-      {success && (
-        <div
-          className="toast show position-fixed top-50 start-50 translate-middle"
-          style={{ zIndex: 2000, minWidth: 300, direction: "rtl" }}
-        >
-          {/* <div className="toast-header bg-success text-white w-100 justify-content-center">
-            <strong className="w-100 text-center">{toastMsg}</strong>
-          </div> */}
-          <div
-            className={
-              "toast-header text-white w-100 justify-content-center " +
-              (toastMsg.includes("כבר קיים") ? "bg-danger" : "bg-success")
-            }
-          >
-            <strong className="w-100 text-center">{toastMsg}</strong>
-          </div>
-        </div>
-      )}
     </>
   );
 };
 
 export default Register;
+
+
+
+

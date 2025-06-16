@@ -1,29 +1,30 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+// redux/messageSlice.ts
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface Message {
-  type: "success" | "error" | null;
+interface MessageState {
+  type: 'success' | 'error' | null;
   text: string;
 }
 
-const initialState: Message = {
+const initialState: MessageState = {
   type: null,
-  text: "",
+  text: '',
 };
 
 const messageSlice = createSlice({
-  name: "message",
+  name: 'message',
   initialState,
   reducers: {
-    setMessage: (state, action: PayloadAction<Message>) => {
+    showMessage: (state, action: PayloadAction<MessageState>) => {
       state.type = action.payload.type;
       state.text = action.payload.text;
     },
     clearMessage: (state) => {
       state.type = null;
-      state.text = "";
+      state.text = '';
     },
   },
 });
 
-export const { setMessage, clearMessage } = messageSlice.actions;
+export const { showMessage, clearMessage } = messageSlice.actions;
 export default messageSlice.reducer;

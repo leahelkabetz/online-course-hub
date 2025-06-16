@@ -6,9 +6,11 @@ import CourseCard from '../CourseCard';
 import { colors, fonts } from '../../styles/theme';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import { getAllProducts } from '../../api/coursesApi';
 
 const courses = [
     {
+                id:  1,
         title: 'עיצוב גרפי מקצועי',
         category: 'עיצוב',
         description: 'ללמוד את יסודות העיצוב הגרפי עם Adobe Creative Suite',
@@ -19,6 +21,7 @@ const courses = [
         image: '/logo-placeholder.png',
     },
     {
+                id:  2,
         title: 'שיווק דיגיטלי למתחילים',
         category: 'שיווק',
         description: 'אסטרטגיות שיווק מתקדמות לעסקים קטנים ובינוניים',
@@ -29,6 +32,7 @@ const courses = [
         image: '/logo-placeholder.png',
     },
     {
+                id: 3,
         title: 'פיתוח אתרים מתקדם',
         category: 'פיתוח תוכנה',
         description: 'ללמוד לבנות אתרים מקצועיים עם React ו-Node.js',
@@ -39,6 +43,7 @@ const courses = [
         image: '/logo-placeholder.png',
     },
     {
+        id: 4,
         title: 'עיצוב UX/UI',
         category: 'עיצוב',
         description: 'עקרונות עיצוב ממשקים וחווית משתמש אפקטיבית',
@@ -77,7 +82,18 @@ const settings = {
         },
     ],
 };
+const fetchCourses = async () => {
+    try {
+        const data = await getAllProducts(); // פונקציה שמביאה את כל הקורסים מהשרת
+        // setCourses(data);
+    } catch (error) {
+        console.error("Failed to fetch courses:", error);
+    }
+};
 
+const deleteFunc = async () => {
+    await fetchCourses(); // ריענון אחרי מחיקה
+};
 export default function PopularCoursesCarousel() {
     return (
         <Box sx={{ px: 1, py: 1, direction: 'rtl', mt: 0, mb: 8, maxHeight: 500 }}>
@@ -92,7 +108,7 @@ export default function PopularCoursesCarousel() {
             </Typography>
 
             <Slider {...settings}>
-                {courses.map((course, index) => (
+                {courses.map((c, index) => (
                     <Box
                         key={index}
                         sx={{
@@ -102,7 +118,8 @@ export default function PopularCoursesCarousel() {
                         }}
                     >
                         <Box sx={{ maxWidth: 350, width: '100%' }}>
-                            <CourseCard {...course} />
+                            <CourseCard course={c}
+                            onDeleted={deleteFunc} />
                         </Box>
                     </Box>
                 ))}

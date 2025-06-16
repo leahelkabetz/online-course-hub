@@ -1,6 +1,6 @@
 import { Container, Row, Col } from "react-bootstrap";
-import LoginForm from "../Components/LogIn";
-import imgHomePage from "../../../public/logo192.png";
+import LoginForm from "../Components/LogInForm";
+
 type LoginPageProps = {
   openRegister: () => void;
 };
@@ -10,16 +10,13 @@ const LoginPage = ({ openRegister }: LoginPageProps) => {
     <div style={{ height: "100vh", overflow: "hidden" }}>
       <Container fluid className="p-0 h-100" dir="rtl">
         <Row className="h-100 m-0">
-          {/* צד שמאל - תמונה */}
           <Col
             md={6}
-            // className="d-none d-md-flex p-0"
             style={{
               height: "100vh",
               alignItems: "center",
               justifyContent: "center",
               display: "flex",
-              // overflow: "hidden",
             }}
           >
             <img
@@ -34,7 +31,6 @@ const LoginPage = ({ openRegister }: LoginPageProps) => {
             />
           </Col>
 
-          {/* צד ימין - טופס התחברות */}
           <Col
             md={6}
             xs={12}
