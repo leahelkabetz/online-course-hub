@@ -1,12 +1,12 @@
 
 export interface Course {
-  id: number;
+  id: string;
   title: string;
   category: string;
   description: string;
   price: number;
   students: number;
   rating: number;
-  badge?: string;
-  image?: string;
+  badge: string | null; // 
+  image: string;
 }

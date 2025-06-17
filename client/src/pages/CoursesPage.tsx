@@ -1,34 +1,157 @@
-import React, { useEffect, useState, useMemo } from 'react';
-import {
-  Typography,
-  Box,
-  TextField,
-  Select,
-  MenuItem,
-  FormControl,
-  Chip,
-  Slider,
-  Button,
-  InputAdornment,
-  Card
-} from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import AddIcon from '@mui/icons-material/Add';
+// import React, { useEffect, useState } from 'react';
+// import { Box, Typography, Button } from '@mui/material';
+// import { useSelector } from 'react-redux';
+// import { RootState } from '../redux/store';
+// import InfiniteScroll from 'react-infinite-scroll-component';
+// import CourseCard from '../Components/CourseCard';
+// import AddCourseDialog from '../Components/AddCourseDialog';
+// import { getAllCategories, getPriceRange, getFilteredCourses } from '../api/coursesApi';
+// import { colors, fonts } from '../styles/theme';
+// import FilterSidebar from '../Components/FilterSidebar';
 
-import CourseCard from '../Components/CourseCard';
-import { colors, fonts } from '../styles/theme';
-import { useDispatch, useSelector } from 'react-redux';
+// export type Course = {
+//   id: number;
+//   title: string;
+//   description: string;
+//   category: string;
+//   price: number;
+// };
+
+// const CoursesPage: React.FC = () => {
+//   const [courses, setCourses] = useState<Course[]>([]);
+//   const [displayedCourses, setDisplayedCourses] = useState<Course[]>([]);
+//   const [hasMore, setHasMore] = useState(true);
+//   const [currentIndex, setCurrentIndex] = useState(0);
+//   const [categories, setCategories] = useState<string[]>([]);
+//   const [priceLimits, setPriceLimits] = useState<[number, number]>([0, 1000]);
+//   const [filters, setFilters] = useState<{ search: string; categories: string[]; priceRange: [number, number]; }>({
+//     search: '',
+//     categories: [],
+//     priceRange: [0, 1000],
+//   });
+
+//   const pageSize = 20;
+//   const isAdmin = useSelector((state: RootState) => state.auth.isAdmin);
+
+//   const fetchInitialData = async () => {
+//     try {
+//       const [catRes, priceRes] = await Promise.all([
+//         getAllCategories(),
+//         getPriceRange()
+//       ]);
+//       setCategories(catRes.data);
+//       setPriceLimits([priceRes.data.min, priceRes.data.max]);
+//       setFilters(prev => ({ ...prev, priceRange: [priceRes.data.min, priceRes.data.max] }));
+//     } catch (err) {
+//       console.error('שגיאה בטעינת קטגוריות או טווח מחירים:', err);
+//     }
+//   };
+
+//   const fetchCourses = async (filtersToSend = filters) => {
+//     try {
+//       const res = await getFilteredCourses(filtersToSend);
+//       setCourses(res.data);
+//       setDisplayedCourses(res.data.slice(0, pageSize));
+//       setCurrentIndex(pageSize);
+//       setHasMore(res.data.length > pageSize);
+//     } catch (err) {
+//       console.error('שגיאה בשליפת קורסים:', err);
+//     }
+//   };
+
+//   useEffect(() => {
+//     fetchInitialData();
+//     fetchCourses();
+//   }, []);
+
+//   const handleFilterChange = (field: string, value: any) => {
+//     const newFilters = { ...filters, [field]: value };
+//     setFilters(newFilters);
+//     fetchCourses(newFilters);
+//   };
+
+//   const resetFilters = () => {
+//     const newFilters = { search: '', categories: [], priceRange: priceLimits };
+//     setFilters(newFilters);
+//     fetchCourses(newFilters);
+//   };
+
+//   const loadMore = () => {
+//     const next = courses.slice(currentIndex, currentIndex + pageSize);
+//     setDisplayedCourses(prev => [...prev, ...next]);
+//     setCurrentIndex(currentIndex + pageSize);
+//     if (currentIndex + pageSize >= courses.length) {
+//       setHasMore(false);
+//     }
+//   };
+
+//   return (
+//     <Box sx={{ display: 'flex', flexDirection: 'row-reverse', px: 2, mt: 10, mb: 5 }}>
+//       <FilterSidebar
+//         filters={filters}
+//         categories={categories}
+//         priceLimits={priceLimits}
+//         onFilterChange={handleFilterChange}
+//         onReset={resetFilters}
+//       />
+
+//       <InfiniteScroll
+//         dataLength={displayedCourses.length}
+//         next={loadMore}
+//         hasMore={hasMore}
+//         loader={<Typography textAlign="center" mt={2}>טוען עוד קורסים...</Typography>}
+//         style={{ overflow: 'visible', width: '100%' }}
+//       >
+//         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3, justifyContent: 'center' }}>
+//           {isAdmin && (
+//             <AddCourseDialog onCourseAdded={() => fetchCourses()} />
+//           )}
+
+//           {displayedCourses.map((course, i) => (
+//             <Box key={i} sx={{ width: { xs: '100%', sm: '45%', md: '30%', lg: '22%' }, minWidth: 250 }}>
+//               <CourseCard course={course} onDeleted={() => fetchCourses()} onEdited={() => fetchCourses()} />
+//             </Box>
+//           ))}
+//         </Box>
+//       </InfiniteScroll>
+//     </Box>
+//   );
+// };
+
+// export default CoursesPage;
+
+
+
+
+
+
+
+
+
+
+
+import React, { useEffect, useState } from 'react';
+import { Box, Typography } from '@mui/material';
+import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
-import { getAllProducts } from '../api/coursesApi';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import CourseCard from '../Components/CourseCard';
+import AddCourseDialog from '../Components/AddCourseDialog';
+import { getAllCategories, getPriceRange, getFilteredCourses, getAllProducts } from '../api/coursesApi';
+import { colors, fonts } from '../styles/theme';
+import FilterSidebar from '../Components/FilterSidebar';
+import { Course } from '../models/course';
+
+
 
 const CoursesPage: React.FC = () => {
-  const [courses, setCourses] = useState<any[]>([]);
-  const [displayedCourses, setDisplayedCourses] = useState<any[]>([]);
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [displayedCourses, setDisplayedCourses] = useState<Course[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const pageSize = 20;
 
+  const [categories, setCategories] = useState<string[]>([]);
+  const [priceLimits, setPriceLimits] = useState<[number, number]>([0, 1000]);
   const [filters, setFilters] = useState<{
     search: string;
     categories: string[];
@@ -36,166 +159,115 @@ const CoursesPage: React.FC = () => {
   }>({
     search: '',
     categories: [],
-    priceRange: [0, 500],
+    priceRange: [0, 1000],
   });
 
-  const dispatch = useDispatch();
+  const pageSize = 20;
   const isAdmin = useSelector((state: RootState) => state.auth.isAdmin);
-  const cart = useSelector((state: RootState) => state.cart.items || []);
 
   const fetchCourses = async () => {
     try {
-      const res = await getAllProducts();
+      const res = await getAllProducts(); // שליפה בלי פילטרים
       setCourses(res.data);
-    } catch (error) {
-      console.error("Failed to fetch courses:", error);
+      setDisplayedCourses(res.data.slice(0, pageSize));
+      setCurrentIndex(pageSize);
+      setHasMore(res.data.length > pageSize);
+    } catch (err) {
+      console.error('שגיאה בשליפת קורסים:', err);
     }
   };
-
+  
   useEffect(() => {
-    fetchCourses();
+    fetchCourses(); // שליפה עם טעינת הקומפוננטה
   }, []);
 
-  const handleFilterChange = (field: string, value: any) => {
-    setDisplayedCourses([]);
-    setCurrentIndex(0);
-    setHasMore(true);
-    setFilters((prev) => ({ ...prev, [field]: value }));
+  // עדכון טווח מחירים וקטגוריות
+  const refreshFilterOptions = async () => {
+    try {
+      const [catRes, priceRes] = await Promise.all([
+        getAllCategories(),
+        getPriceRange(),
+      ]);
+      setCategories(catRes.data);
+      setPriceLimits([priceRes.data.min, priceRes.data.max]);
+      setFilters((prev) => ({
+        ...prev,
+        priceRange: [priceRes.data.min, priceRes.data.max],
+      }));
+    } catch (err) {
+      console.error('שגיאה בטעינת קטגוריות או טווח מחירים:', err);
+    }
   };
+
+  // const fetchCourses = async (filtersToSend = filters) => {
+  //   try {
+  //     const res = await getFilteredCourses(filtersToSend);
+  //     setCourses(res.data);
+  //     setDisplayedCourses(res.data.slice(0, pageSize));
+  //     setCurrentIndex(pageSize);
+  //     setHasMore(res.data.length > pageSize);
+  //   } catch (err) {
+  //     console.error('שגיאה בשליפת קורסים:', err);
+  //   }
+  // };
+  //  const fetchCourses = async (filtersToSend = filters) => {
+  //     try {
+  //       const res = await getAllProducts();
+  //       setCourses(res.data);
+
+  //     } catch (err) {
+  //       console.error('שגיאה בשליפת קורסים:', err);
+  //     }
+  //   };
+  //   useEffect(() => {
+  //     const init = async () => {
+  //       await refreshFilterOptions();
+  //       await fetchCourses();
+  //     };
+  //     init();
+  //   }, []);
+
+  //   const handleFilterChange = (field: string, value: any) => {
+  //     const newFilters = { ...filters, [field]: value };
+  //     setFilters(newFilters);
+  //     fetchCourses(newFilters);
+  //   };
 
   const resetFilters = () => {
-    setFilters({ search: '', categories: [], priceRange: [0, 500] });
+    const newFilters = {
+      search: '',
+      categories: [],
+      priceRange: priceLimits,
+    };
+    setFilters(newFilters);
+    //fetchCourses(newFilters);
   };
-
-  const filteredCourses = useMemo(() => {
-    return courses.filter((c) => {
-      const matchesSearch =
-        c.title.includes(filters.search) || c.description.includes(filters.search);
-
-      const matchesCategory =
-        filters.categories.length === 0 || filters.categories.includes(c.category);
-
-      const matchesPrice =
-        c.price >= filters.priceRange[0] && c.price <= filters.priceRange[1];
-
-      return matchesSearch && matchesCategory && matchesPrice;
-    });
-  }, [filters, courses]);
 
   const loadMore = () => {
-    const next = filteredCourses.slice(currentIndex, currentIndex + pageSize);
+    const next = courses.slice(currentIndex, currentIndex + pageSize);
     setDisplayedCourses((prev) => [...prev, ...next]);
     setCurrentIndex(currentIndex + pageSize);
-    if (currentIndex + pageSize >= filteredCourses.length) {
+    if (currentIndex + pageSize >= courses.length) {
       setHasMore(false);
     }
   };
 
-  useEffect(() => {
-    setDisplayedCourses([]);
-    setCurrentIndex(0);
-    setHasMore(true);
 
-    const next = filteredCourses.slice(0, pageSize);
-    setDisplayedCourses(next);
-    setCurrentIndex(pageSize);
-    if (pageSize >= filteredCourses.length) {
-      setHasMore(false);
-    }
-  }, [filters, filteredCourses]);
-
-  const deleteFunc = async () => {
-    await fetchCourses(); // ריענון אחרי מחיקה
+  const handleCourseAdded = async () => {
+    await refreshFilterOptions();  // קודם כל נרענן את הקטגוריות והטווח
+    await fetchCourses();          // ואז נטען קורסים לפי הפילטרים החדשים
   };
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'row-reverse', px: 2, mt: 10, mb: 5 }}>
-      <div
-        style={{
-          minWidth: 320,
-          maxWidth: 380,
-          fontFamily: fonts?.base || 'inherit',
-          position: 'sticky',
-          top: 100,
-          alignSelf: 'flex-start',
-          height: 'fit-content',
-          marginTop: 12
-        }}
-      >
+      {/* <FilterSidebar
+        filters={filters}
+        categories={categories}
+        priceLimits={priceLimits}
+        //onFilterChange={handleFilterChange}
+        onReset={resetFilters}
+      /> */}
 
-        <TextField
-          fullWidth
-          placeholder="חיפוש חופשי"
-          variant="outlined"
-          value={filters.search}
-          onChange={(e) => handleFilterChange('search', e.target.value)}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon sx={{ color: 'gray' }} />
-              </InputAdornment>
-            ),
-            inputProps: {
-              dir: 'rtl',
-              style: { textAlign: 'right' },
-            },
-          }}
-          sx={{ mb: 3, mt: 6, direction: 'rtl' }}
-        />
-
-        <FormControl fullWidth>
-          <Select
-            multiple
-            displayEmpty
-            value={filters.categories}
-            onChange={(e) => handleFilterChange('categories', e.target.value)}
-            renderValue={(selected: any) => {
-              if (selected.length === 0) {
-                return <span style={{ color: '#aaa', direction: 'rtl', textAlign: 'right', display: 'block', width: '100%' }}>בחר קטגוריות</span>;
-              }
-              return (
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, direction: 'rtl' }}>
-                  {selected.map((value: string) => (
-                    <Chip key={value} label={value} />
-                  ))}
-                </Box>
-              );
-            }}
-            inputProps={{ dir: 'rtl' }}
-          >
-            <MenuItem dir='rtl' value="פיתוח תוכנה">פיתוח תוכנה</MenuItem>
-            <MenuItem dir='rtl' value="עיצוב">עיצוב</MenuItem>
-            <MenuItem dir='rtl' value="שיווק">שיווק</MenuItem>
-          </Select>
-        </FormControl>
-
-        <Slider
-          value={filters.priceRange}
-          onChange={(_, val) => handleFilterChange('priceRange', val)}
-          valueLabelDisplay="on"
-          min={0}
-          max={500}
-          step={10}
-          sx={{
-            mb: 3,
-            mt: 5,
-            direction: 'ltr',
-            color: colors.Primary,
-            '& .MuiSlider-thumb': { backgroundColor: colors.AccentLight },
-            '& .MuiSlider-track': { backgroundColor: colors.Primary },
-            '& .MuiSlider-rail': { backgroundColor: '#e0e0e0' },
-            '& .MuiSlider-valueLabel': {
-              backgroundColor: 'transparent',
-              color: colors.Primary,
-              fontWeight: 'bold',
-            },
-          }}
-        />
-
-        <Button onClick={resetFilters} fullWidth sx={{ color: colors.Primary, textAlign: 'right' }}>
-          איפוס מסננים
-        </Button>
-      </div>
       <InfiniteScroll
         dataLength={displayedCourses.length}
         next={loadMore}
@@ -205,56 +277,27 @@ const CoursesPage: React.FC = () => {
       >
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3, justifyContent: 'center' }}>
           {isAdmin && (
-            <Box sx={{ width: { xs: '90%', sm: '45%', md: '30%', lg: '22%' }, minWidth: 250 }}>
-              <Card
-                sx={{
-                  height: 250,
-                  border: `2px dashed ${colors.Primary}`,
-                  borderRadius: 3,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  cursor: 'pointer',
-                  p: 2,
-                  mt: 6,
-                  mr: 10,
-                  textAlign: 'center',
-                  fontFamily: fonts.base,
-                  transition: 'all 0.3s',
-                  '&:hover': {
-                    backgroundColor: '#f9f9f9',
-                    boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-                  },
-                }}
-                onClick={() => console.log('מעבר לטופס הוספת קורס')}
-              >
-                <AddIcon sx={{ fontSize: 40, color: colors.Primary, mb: 1 }} />
-                <Typography variant="subtitle1" color={colors.Primary} fontWeight="bold">
-                  הוספת קורס חדש
-                </Typography>
-              </Card>
-            </Box>
+            <AddCourseDialog onCourseAdded={handleCourseAdded} />
           )}
-          {displayedCourses.map((course, i) => (
+
+          {displayedCourses.map((c, i) => (
             <Box
               key={i}
               sx={{
-                width: {
-                  xs: '100%',
-                  sm: '45%',
-                  md: '30%',
-                  lg: '22%',
-                },
+                width: { xs: '100%', sm: '45%', md: '30%', lg: '22%' },
                 minWidth: 250,
               }}
             >
-              <CourseCard course={course} onDeleted={deleteFunc} />
+              <CourseCard
+                course={c}
+                onDeleted={fetchCourses} // יופעל אחרי מחיקה
+                onEdited={fetchCourses}  // יופעל אחרי עדכון
+              />
+
             </Box>
           ))}
         </Box>
       </InfiniteScroll>
-
     </Box>
   );
 };
